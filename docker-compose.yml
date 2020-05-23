@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - ${PWD}/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+  saml-proxy:
+    image: linyang1218/saml-proxy
+    environment:
+      COOKIE_SECRET: secret
+      RACK_ENV: production
+      SAML_IDP_METADATA: https://samltest.id/saml/idp
+      SAML_SP_ENTITY_ID: https://github.com/lyang/saml-proxy-example
+      SAML_ASSERTION_CONSUMER_SERVICE_URL: http://localhost/consume
+      SAML_CERTIFICATE: 'config/localhost.crt'
+      SAML_PRIVATE_KEY: 'config/localhost.key'
+      SAML_AUTHN_REQUESTS_SIGNED: 'true'
+      SAML_METADATA_SIGNED: 'true'
+    volumes:
+      - ${PWD}/mappings.yaml.erb:/app/config/mappings.yaml.erb
+  app:
+    build:
+      context: .
