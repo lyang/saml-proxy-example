@@ -1,0 +1,42 @@
+@startuml
+participant Browser as B
+participant Nginx as N
+participant SamlProxy as S
+participant "Identity Provider" as P
+box "SSO Protected Service" #LightBlue
+participant Application as A
+end box
+group Authentication Required
+B->N: GET /secret
+N-->S: auth_request /auth
+note over S: session[user] = null
+S-->N: 401
+N->B: 302 /start?reditrect=%2Fsecret
+end
+group Initiate SSO
+B->N: GET /start?reditrect=%2Fsecret
+N-->S: GET /start?reditrect=%2Fsecret
+S-->N: 302 https://idp.com/sso?SAMLRequest=abc\nsession[redirect]=/secret
+S-->B: 302 https://idp.com/sso?SAMLRequest=abc
+B->P: GET https://idp.com/sso?SAMLRequest=abc
+P->B: 200 Login Form
+B->P: POST https://idp.com/login
+P->B: 200 POST https://example.com/consume?SAMLResponse=def
+end
+group Authentication Confirmed
+B->N: POST /consume?SAMLResponse=def
+N-->S: POST /consume?SAMLResponse=def
+note over S: session[user]=user
+S-->N: 302 /secret
+N-->B: 302 /secret
+end
+group Access Granted
+B-->N: GET /secret
+N-->S: auth_request /auth
+note over S: session[user]=user
+S-->N: 200
+N-->A: /secret
+A-->N: 200 ****
+N-->B: 200 ****
+end
+@enduml
