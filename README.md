@@ -14,7 +14,7 @@ It will start three containers: `nginx`, `saml-proxy` and `app`.
 
 `app` simply displays the forwarded headers in its greetings.
 
-![sequence-diagram](https://puml-demo.herokuapp.com/raw/https%3A%2F%2Fraw.githubusercontent.com%2Flyang%2Fsaml-proxy-example%2Fmaster%2Fsequence-diagram.puml)
+![sequence-diagram](https://demo.puml.net/raw/https%3A%2F%2Fraw.githubusercontent.com%2Flyang%2Fsaml-proxy-example%2Fmaster%2Fsequence-diagram.puml)
 
 The IdP in this example is https://samltest.id/
 
